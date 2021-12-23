@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,6 +91,25 @@ class MoviesInfoControllerTest {
                     assertNotNull(returnedMovieInfo);
                     assertNotNull(returnedMovieInfo.getId());
                     assertEquals("mockId", returnedMovieInfo.getId());
+                });
+    }
+
+    @Test
+    void addMovieInfo_validation() {
+        var movieInfo = new MovieInfo(null, "", -2005, Arrays.asList(""), LocalDate.parse("2005-06-15"));
+        webTestClient.post()
+                .uri(MOVIE_INFO_URL + "/add")
+                .bodyValue(movieInfo)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody(String.class)
+                .consumeWith(stringEntityExchangeResult -> {
+                    var responseBody = stringEntityExchangeResult.getResponseBody();
+                    var expectedErrorMessage = "movieInfo.cast must be present, movieInfo.name must be present, movieInfo.year must be a positive value";
+                    System.out.println("Response Body: " + responseBody);
+                    assertNotNull(responseBody);
+                    assertEquals(expectedErrorMessage, responseBody);
                 });
     }
 

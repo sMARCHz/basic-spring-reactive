@@ -1,5 +1,6 @@
 package com.nattanon.movieinfoservice.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,6 @@ public class MovieInfo {
     private String name;
     private Integer year;
     private List<String> cast;
+    @JsonProperty("release_date")
     private LocalDate releaseDate;
 }

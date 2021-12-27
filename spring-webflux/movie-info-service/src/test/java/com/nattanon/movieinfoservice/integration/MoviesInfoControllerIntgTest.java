@@ -85,6 +85,16 @@ class MoviesInfoControllerIntgTest {
     }
 
     @Test
+    void getMovieInfoById_notFound() {
+        String movieId = "def";
+        webTestClient.get()
+                .uri(MOVIE_INFO_URL + "/{id}", movieId)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    @Test
     void addMovieInfo() {
         // given
         var movieInfo = new MovieInfo(null, "Batman Begins", 2005, Arrays.asList("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
@@ -121,6 +131,19 @@ class MoviesInfoControllerIntgTest {
                     assertNotNull(updatedMovieInfo.getId());
                     assertEquals("Dark Knight Rises1", updatedMovieInfo.getName());
                 });
+    }
+
+    @Test
+    void updateMovieInfo_notFound() {
+        var movieId = "def";
+        var movieInfo = new MovieInfo(null, "Dark Knight Rises1", 2005, Arrays.asList("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+        webTestClient.put()
+                .uri(MOVIE_INFO_URL + "/update/{id}", movieId)
+                .bodyValue(movieInfo)
+                .exchange()
+                .expectStatus()
+                .isNotFound()
+                .expectBody(MovieInfo.class);
     }
 
     @Test
